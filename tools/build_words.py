@@ -25,7 +25,11 @@
 #   before |  the common words (top CORE_TOP), most frequent first: the
 #             answer a hint or a reveal shows.
 #   after |   every other dictionary word with these letters, accepted when
-#             typed but never shown.
+#             typed but never shown. Taken from every block of
+#             boggle.koplugin's list: in French its second block holds the
+#             Grammalecte lexicon's forms (that plugin's tools/lexicon_fr.py,
+#             which filters them for family play). Keys, tiers and common
+#             words only use its first block, so the pyramids do not move.
 #
 # A start key is a 3-letter key whose most frequent word is in the top
 # START_TOP and not in START_EXCLUDE (interjections, first names, loanwords:
@@ -55,6 +59,12 @@ def words_of(path):
     text = open(path, encoding="utf-8").read()
     m = re.search(r"\[\[(.*?)\]\]", text, re.S)
     return [w.upper() for w in re.findall(r"[A-Za-z]+", m.group(1))]
+
+
+def all_words_of(path):
+    # Every [[...]] block, not only the first.
+    text = open(path, encoding="utf-8").read()
+    return [w.upper() for b in re.findall(r"\[\[(.*?)\]\]", text, re.S) for w in re.findall(r"[A-Za-z]+", b)]
 
 
 def blocked_of(lang):
@@ -90,6 +100,8 @@ def build(lang, freq_path):
     words = {w for w in words_of(os.path.join(BOGGLE, f"words_{lang}.lua"))
              if MIN_LEN <= len(w) <= MAX_LEN}
     blocked = blocked_of(lang)
+    accepted = {w for w in all_words_of(os.path.join(BOGGLE, f"words_{lang}.lua"))
+                if MIN_LEN <= len(w) <= MAX_LEN}
 
     rank = {}
     for line in open(freq_path, encoding="utf-8"):
@@ -100,7 +112,7 @@ def build(lang, freq_path):
     common = {w for w in words if rank.get(w, CORE_TOP) < CORE_TOP and w not in blocked}
 
     by_key = collections.defaultdict(list)
-    for w in words:
+    for w in accepted:
         by_key[key_of(w)].append(w)
     top = {}
     for w in sorted(common, key=lambda w: (rank[w], w)):
@@ -122,7 +134,8 @@ def build(lang, freq_path):
     name = NAMES[lang]
     source = {
         "en": "ENABLE (Public Domain)",
-        "fr": "the CC0 Scrabble-valid list + an-array-of-french-words (MIT)",
+        "fr": "the CC0 Scrabble-valid list + an-array-of-french-words (MIT),\n"
+              "-- plus for rare words the Grammalecte lexicon (MPL 2.0)",
     }[lang]
     with open(os.path.join(ROOT, f"words_{lang}.lua"), "w", encoding="utf-8") as f:
         f.write(f"""-- {name} letter sets for Letter Pyramid (generated, do not edit).

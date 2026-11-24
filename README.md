@@ -57,7 +57,9 @@ Built by `tools/build_words.py` from the dictionaries of
 Domain; a CC0 Scrabble-valid French list and an-array-of-french-words, MIT).
 The pyramids use only common words (the top 30,000 of the OpenSubtitles
 frequency lists, hermitdave/FrequencyWords, CC-BY-SA 4.0; top 15,000 for Easy
-and Medium); the rest of the dictionary is accepted when typed.
+and Medium); the rest of the dictionary is accepted when typed, in French
+including the forms of the [Grammalecte](https://grammalecte.net) lexicon
+(Dicollecte, MPL 2.0) that Boggle's list carries.
 
 ## Installation
 

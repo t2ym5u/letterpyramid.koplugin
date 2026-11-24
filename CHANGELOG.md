@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2026-11-24
+
+### Changed
+- French accepts 1,482 more rare words when typed, taken from the Grammalecte
+  lexicon (Dicollecte, MPL 2.0) through Boggle's word list. Pyramids, hints,
+  revealed words and the Daily Challenge are unchanged.
+
 ## [1.0.3] - 2026-11-24
 
 ### Changed
